@@ -7,7 +7,7 @@ import vendorRoutes from "./routes/vendorRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import enquiryRoutes from "./routes/enquiryRoutes.js";
-import NotificationRoutes from "./routes/NotificationRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import publicVendorRoutes from "./routes/publicVendorRoutes.js";
 import vendorProfileRoutes from "./routes/vendorProfileRoutes.js";
 import adminBookingRoutes from "./routes/adminBookingRoutes.js";
@@ -30,7 +30,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/admin/bookings", adminBookingRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/enquiries", enquiryRoutes);
-app.use("/api/Notifications", NotificationRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 import { errorHandler } from "./middleware/errorMiddleware.js";
 

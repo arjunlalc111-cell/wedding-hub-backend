@@ -1,4 +1,4 @@
-import Notification from "../models/Notification.js";
+import notification from "../models/notification.js";
 
 export const notify = async ({
   userType,
@@ -7,7 +7,7 @@ export const notify = async ({
   message
 }) => {
   try {
-    await Notification.create({
+    await notification.create({
       userType,
       userId,
       title,
@@ -16,6 +16,6 @@ export const notify = async ({
 
     console.log(`🔔 ${userType.toUpperCase()} NOTIFICATION:`, title);
   } catch (err) {
-    console.error("Notification error:", err.message);
+    console.error("notification error:", err.message);
   }
 };
