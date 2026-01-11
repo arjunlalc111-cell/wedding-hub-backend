@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify OTP</title>
+</head>
+<body>
+
+<h2>Enter OTP</h2>
+
+<input id="otp" placeholder="6-digit OTP"><br><br>
+<button onclick="verify()">Verify</button>
+
+<script>
+const email = new URLSearchParams(window.location.search).get("email");
+
+function verify() {
+  fetch("http://localhost:5000/api/admin-auth/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      otp: document.getElementById("otp").value
+    })
+  })
+  .then(res => res.json())
+  .then(() => {
+    localStorage.setItem("adminLoggedIn", "yes");
+    window.location.href = "admin.html";
+  })
+  .catch(() => alert("OTP invalid"));
+}
+</script>
+
+</body>
+</html>

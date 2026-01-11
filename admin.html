@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel | Wedding Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #b71c1c;
+      text-align: center;
+    }
+
+    .vendor-card {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .actions button {
+      margin-right: 10px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .approve {
+      background: #2e7d32;
+      color: #fff;
+    }
+
+    .delete {
+      background: #c62828;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Admin Panel – Vendors</h1>
+
+<div id="vendorList"></div>
+
+<script>
+  const list = document.getElementById("vendorList");
+
+  function loadVendors() {
+    fetch("http://localhost:5000/api/admin/vendors")
+      .then(res => res.json())
+      .then(vendors => {
+        list.innerHTML = "";
+        vendors.forEach(v => {
+          const div = document.createElement("div");
+          div.className = "vendor-card";
+          div.innerHTML = `
+            <h3>${v.name}</h3>
+            <p><b>Service:</b> ${v.service}</p>
+            <p><b>Location:</b> ${v.location}</p>
+            <p><b>Status:</b> ${v.isApproved ? "Approved" : "Pending"}</p>
+
+            <div class="actions">
+              ${!v.isApproved ? <button class="approve" onclick="approveVendor('${v._id}')">Approve</button> : ""}
+              <button class="delete" onclick="deleteVendor('${v._id}')">Delete</button>
+            </div>
+          `;
+          list.appendChild(div);
+        });
+      });
+  }
+
+  function approveVendor(id) {
+    fetch(`http://localhost:5000/api/admin/vendors/${id}`/approve, {
+      method: "PUT"
+    }).then(loadVendors);
+  }
+
+  function deleteVendor(id) {
+    if (confirm("Delete this vendor?")) {
+      fetch(`http://localhost:5000/api/admin/vendors/${id}`, {
+        method: "DELETE"
+      }).then(loadVendors);
+    }
+  }
+
+  loadVendors();
+</script>
+
+</body>
+</html> 

@@ -1,0 +1,167 @@
+{
+  "vendors": [
+    {
+      "id": "v1",
+      "name": "Royal Tents & Decor",
+      "services": ["Tent & Decoration", "Lighting & AV", "Flower Decoration"],
+      "city": "Mumbai",
+      "location": "Bandra East",
+      "lat": "19.0544",
+      "lng": "72.8407",
+      "phone": "917727962793",
+      "rating": 4.8,
+      "price": "₹60,000+",
+      "image": "images/slide1.jpg",
+      "gallery": [
+        "images/slide1.jpg",
+        "images/slide2.jpg",
+        "images/slide3.jpg",
+        "images/slide4.jpg",
+        "images/slide5.jpg",
+        "images/slide6.jpg",
+        "images/slide7.jpg",
+        "images/slide8.jpg",
+        "videos/demo1.mp4"
+      ]
+    },
+    {
+      "id": "v2",
+      "name": "Beat DJs",
+      "services": ["DJ & Sound", "Live Music"],
+      "city": "Delhi",
+      "location": "Saket",
+      "lat": "28.5245",
+      "lng": "77.2100",
+      "phone": "919999000111",
+      "rating": 4.6,
+      "price": "₹18,000+",
+      "image": "images/slide2.jpg",
+      "gallery": [
+        "images/slide2.jpg",
+        "images/slide9.jpg",
+        "images/slide10.jpg",
+        "videos/demo2.mp4",
+        "images/slide11.jpg"
+      ]
+    },
+    {
+      "id": "v3",
+      "name": "Tasteful Caterers",
+      "services": ["Caterers"],
+      "city": "Ahmedabad",
+      "location": "Navrangpura",
+      "lat": "23.0358",
+      "lng": "72.5236",
+      "phone": "918888777666",
+      "rating": 4.7,
+      "price": "₹120/person",
+      "image": "images/slide3.jpg",
+      "gallery": [
+        "images/slide3.jpg",
+        "images/slide12.jpg",
+        "images/slide13.jpg",
+        "images/slide14.jpg",
+        "videos/demo3.mp4"
+      ]
+    },
+    {
+      "id": "v4",
+      "name": "Capture Moments",
+      "services": ["Photography", "Videography", "Photo Booth"],
+      "city": "Pune",
+      "location": "Koregaon Park",
+      "lat": "18.5402",
+      "lng": "73.9121",
+      "phone": "917000111222",
+      "rating": 4.9,
+      "price": "₹40,000+",
+      "image": "images/slide4.jpg",
+      "gallery": [
+        "images/slide4.jpg",
+        "images/slide5.jpg",
+        "images/slide6.jpg",
+        "images/slide7.jpg",
+        "images/slide8.jpg",
+        "images/slide15.jpg",
+        "videos/demo4.mp4",
+        "videos/demo5.mp4"
+      ]
+    },
+    {
+      "id": "v5",
+      "name": "Bridal Shine Makeup",
+      "services": ["Makeup Artist"],
+      "city": "Jaipur",
+      "location": "Civil Lines",
+      "lat": "26.9124",
+      "lng": "75.7873",
+      "phone": "917333222111",
+      "rating": 4.5,
+      "price": "₹8,000+",
+      "image": "images/slide5.jpg",
+      "gallery": [
+        "images/slide5.jpg",
+        "images/slide16.jpg",
+        "images/slide17.jpg",
+        "images/slide18.jpg"
+      ]
+    },
+    {
+      "id": "v6",
+      "name": "Sacred Pandits",
+      "services": ["Pandit"],
+      "city": "Varanasi",
+      "location": "Assi",
+      "lat": "25.2960",
+      "lng": "82.9718",
+      "phone": "917444555666",
+      "rating": 4.4,
+      "price": "₹5,000+",
+      "image": "images/slide6.jpg",
+      "gallery": [
+        "images/slide6.jpg",
+        "images/slide19.jpg",
+        "images/slide20.jpg"
+      ]
+    },
+    {
+      "id": "v7",
+      "name": "Dhol Masters",
+      "services": ["Dholwale", "Live Music"],
+      "city": "Gurgaon",
+      "location": "MG Road",
+      "lat": "28.4595",
+      "lng": "77.0266",
+      "phone": "917222333444",
+      "rating": 4.6,
+      "price": "₹10,000+",
+      "image": "images/slide7.jpg",
+      "gallery": [
+        "images/slide7.jpg",
+        "images/slide8.jpg",
+        "images/slide9.jpg",
+        "videos/demo6.mp4"
+      ]
+    },
+    {
+      "id": "v8",
+      "name": "Luxury Rides",
+      "services": ["Luxury Car", "Transport & Cars"],
+      "city": "Mumbai",
+      "location": "Andheri",
+      "lat": "19.1190",
+      "lng": "72.8466",
+      "phone": "917555666777",
+      "rating": 4.3,
+      "price": "₹6,000+",
+      "image": "images/slide8.jpg",
+      "gallery": [
+        "images/slide8.jpg",
+        "images/slide10.jpg",
+        "images/slide11.jpg",
+        "images/slide12.jpg",
+        "videos/demo7.mp4"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Vendor Login | Wedding Hub</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body{font-family:'Poppins',sans-serif;background:#f8fafc;margin:0;color:#111}
+    .container{max-width:420px;margin:60px auto;padding:18px}
+    .card{background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    label{display:block;margin-bottom:6px;color:#374151}
+    input{width:100%;padding:10px;border:1px solid #e6e6e6;border-radius:8px;margin-bottom:12px}
+    .btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+    .btn-primary{background:#e11d48;color:#fff;width:100%}
+    .muted{font-size:13px;color:#6b7280;margin-top:8px;text-align:center}
+    .error{color:#b91c1c;margin:10px 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Vendor Login</h2>
+      <form id="loginForm">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="text" placeholder="+91XXXXXXXXXX" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Your password" required>
+        <button id="loginBtn" class="btn btn-primary">Login</button>
+        <div id="msg"></div>
+      </form>
+
+      <div class="muted">
+        <div>Don't have password-based account? <a href="vendor-register.html">Register</a></div>
+        <div style="margin-top:6px"><a href="index.html">Back to Home</a></div>
+      </div>
+    </div>
+  </div>
+
+<script src="env.js"></script>
+<script>
+  (function () {
+    const BASE_URL = (window.BASE_URL || '').replace(/\/+$/, '');
+    const form = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const msg = document.getElementById('msg');
+
+    function showMessage(text, isError) {
+      msg.textContent = text;
+      msg.className = isError ? 'error' : '';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMessage('', false);
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+
+      try {
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!phone || !password) {
+          showMessage('Phone and password are required.', true);
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Login';
+          return;
+        }
+
+        if (BASE_URL) {
+          // Attempt live backend login
+          const url = `${BASE_URL}/api/auth/vendor/login`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, password })
+          });
+
+          const json = await res.json();
+          if (!res.ok) {
+            showMessage(json.message || 'Login failed', true);
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Login';
+            return;
+          }
+
+          // backend returns { token, vendor }
+          if (json.token) localStorage.setItem('token', json.token);
+          if (json.vendor) localStorage.setItem('vendor', JSON.stringify(json.vendor));
+          // Redirect to vendor profile (uses vendor id). Adjust field name as per your API.
+          const vendorId = (json.vendor && (json.vendor.id || json.vendor._id || json.vendor.id)) || '';
+          if (vendorId) window.location.href = 'vendor-profile.html?id=' + encodeURIComponent(vendorId);
+          else window.location.href = 'index.html';
+        } else {
+          // Fallback: demo/local login (no backend). Store vendor object in localStorage.
+          const demoVendor = {
+            id: 'v_local_' + Date.now(),
+            name: 'Demo Vendor',
+            phone: phone,
+            createdAt: Date.now(),
+            image: 'images/slide1.jpg'
+          };
+          localStorage.setItem('vendor', JSON.stringify(demoVendor));
+          localStorage.setItem('token', 'demo-' + Date.now());
+          showMessage('Logged in (demo). Redirecting...', false);
+          setTimeout(() => { window.location.href = 'vendor-profile.html?id=' + encodeURIComponent(demoVendor.id); }, 800);
+        }
+      } catch (err) {
+        console.error('Login error', err);
+        showMessage('An error occurred. Try again later.', true);
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+      }
+    });
+  })();
+</script>
+</body>
+</html>
