@@ -1,7 +1,14 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/authRoutes.js";
 import vendorRoutes from "./routes/vendorRoutes.js";
@@ -13,22 +20,65 @@ import publicVendorRoutes from "./routes/publicVendorRoutes.js";
 import vendorProfileRoutes from "./routes/vendorProfileRoutes.js";
 import adminBookingRoutes from "./routes/adminBookingRoutes.js";
 
-dotenv.config();
+import { errorHandler } from "./middleware/errorMiddleware.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-app.use(express.json());
+// Basic security + parsers
+app.set("trust proxy", 1);
+app.use(helmet());
 
+const corsOrigin = process.env.CORS_ORIGIN || "*";
+app.use(
+  cors({
+    origin: corsOrigin,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// Logging
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+
+// Rate limiter
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: parseInt(process.env.RATE_LIMIT_MAX || "120", 10),
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+// Connect to MongoDB
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  console.error("❌ MONGO_URI is not set in environment. Exiting.");
+  process.exit(1);
+}
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log("❌ DB Error", err));
+  .catch((err) => {
+    console.error("❌ DB Error", err);
+    process.exit(1);
+  });
 
+// Serve uploads (local) - ensure your upload middleware writes into /uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Health check
+app.get("/api/health", (req, res) => res.json({ ok: true, time: Date.now() }));
+
+// Register routes (order matters if you have overlapping paths)
 app.use("/api/auth", authRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/public/vendors", publicVendorRoutes);
@@ -39,9 +89,18 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-import { errorHandler } from "./middleware/errorMiddleware.js";
-
+// Error handler (should be after routes)
 app.use(errorHandler);
 
+// Global handlers for unexpected errors
+process.on("unhandledRejection", (reason, p) => {
+  console.error("Unhandled Rejection at: Promise ", p, "reason:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception thrown:", err);
+  // Decide whether to exit in production
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
