@@ -1,5 +1,5 @@
 import express from "express";
-import Vendor from "../models/vendor.js";
+import Vendor from "../models/vendors.js"; // <-- plural 'vendors.js'!
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   try {
     const { service, city, search } = req.query;
 
-    let filter = { isApproved: true };
+    let filter = { approved: true }; // isApproved -> approved (as per your model)
 
     if (service) {
       filter.service = service;
@@ -28,8 +28,9 @@ router.get("/", async (req, res) => {
       filter.name = { $regex: search, $options: "i" };
     }
 
+    // gallery field might be named 'media' in your Vendor model
     const vendors = await Vendor.find(filter).select(
-      "name service city gallery rating"
+      "name service city media rating"
     );
 
     res.json(vendors);

@@ -1,55 +1,38 @@
-// backend/routes/adminRoutes.js
-import express from "express";
-import Vendor from "../models/vendor.js";
-import Booking from "../models/Booking.js";
-import Enquiry from "../models/Enquiry.js";
+//
+// Merged adminRoutes.js for Wedding Hub (ES6, PRODUCTION-READY)
+// Admin can:
+//   - List all users, vendors, bookings, platform stats
+//   - List pending vendors
+//   - Approve/reject vendor (with reason)
+// ALL routes protected with requireAdmin middleware
+//
 
-import authMiddleware from "../middleware/authMiddleware.js";
-import adminMiddleware from "../middleware/adminMiddleware.js";
+import express from "express";
+import {
+  listVendors,
+  listUsers,
+  listBookings,
+  platformStats,
+  listPending,
+  approveVendor,
+  rejectVendor
+} from "../controllers/adminController.js";
+import { requireAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-/* Admin → All Vendors */
-router.get(
-  "/vendors",
-  authMiddleware,
-  adminMiddleware,
-  async (req, res) => {
-    res.json(await Vendor.find());
-  }
-);
+// All APIs require admin JWT or X-Admin-Secret
+router.use(requireAdmin);
 
-/* Admin → Approve Vendor */
-router.patch(
-  "/vendor/:id",
-  authMiddleware,
-  adminMiddleware,
-  async (req, res) => {
-    const vendor = await Vendor.findById(req.params.id);
-    vendor.isApproved = req.body.isApproved;
-    await vendor.save();
-    res.json({ message: "Vendor updated" });
-  }
-);
+// General listings
+router.get("/vendors", listVendors);
+router.get("/users", listUsers);
+router.get("/bookings", listBookings);
+router.get("/stats", platformStats);
 
-/* Admin → All Bookings */
-router.get(
-  "/bookings",
-  authMiddleware,
-  adminMiddleware,
-  async (req, res) => {
-    res.json(await Booking.find());
-  }
-);
-
-/* Admin → All Enquiries */
-router.get(
-  "/enquiries",
-  authMiddleware,
-  adminMiddleware,
-  async (req, res) => {
-    res.json(await Enquiry.find());
-  }
-);
+// Vendor approval/rejection
+router.get("/vendors/pending", listPending);
+router.post("/vendors/:id/approve", approveVendor);
+router.post("/vendors/:id/reject", rejectVendor);
 
 export default router;

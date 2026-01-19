@@ -1,3 +1,9 @@
+//
+// Merged bookingRoutes.js for Wedding Hub
+// Supports: customer create booking, vendor view bookings, vendor update status
+// All routes protected by authMiddleware (JWT)
+//
+
 import express from "express";
 import Booking from "../models/Booking.js";
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -6,6 +12,8 @@ const router = express.Router();
 
 /**
  * CUSTOMER → Create booking
+ * POST /api/bookings
+ * body: { vendorId, service }
  */
 router.post("/", authMiddleware, async (req, res) => {
   try {
@@ -24,12 +32,13 @@ router.post("/", authMiddleware, async (req, res) => {
 
 /**
  * VENDOR → View own bookings
+ * GET /api/bookings/vendor
  */
 router.get("/vendor", authMiddleware, async (req, res) => {
   try {
     const bookings = await Booking.find({
       vendor: req.user.id,
-    }).populate("user");
+    }).populate("user service");
 
     res.json(bookings);
   } catch (err) {
@@ -38,15 +47,25 @@ router.get("/vendor", authMiddleware, async (req, res) => {
 });
 
 /**
- * VENDOR → Update booking status
+ * VENDOR → Update booking status (approve/reject/cancel/complete)
+ * PUT /api/bookings/:id/status
+ * body: { status }
  */
 router.put("/:id/status", authMiddleware, async (req, res) => {
   try {
+    const allowed = ["pending", "approved", "rejected", "cancelled", "completed"];
+    const newStatus = req.body.status;
+    if (!allowed.includes(newStatus)) {
+      return res.status(400).json({ message: "Invalid status value." });
+    }
+
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
-      { status: req.body.status },
+      { status: newStatus },
       { new: true }
     );
+
+    if (!booking) return res.status(404).json({ message: "Booking not found." });
 
     res.json(booking);
   } catch (err) {

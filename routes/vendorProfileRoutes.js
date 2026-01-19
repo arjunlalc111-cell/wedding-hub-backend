@@ -1,5 +1,5 @@
 import express from "express";
-import Vendor from "../models/vendor.js";
+import Vendor from "../models/vendors.js"; // ✅ Plural and lowercase!
 import authMiddleware from "../middleware/authMiddleware.js";
 import multer from "multer";
 import path from "path";
@@ -21,7 +21,7 @@ const upload = multer({ storage });
 /* ================= GET VENDOR PROFILE ================= */
 router.get("/me", authMiddleware, async (req, res) => {
   try {
-    const vendor = await Vendor.findById(req.user.id);
+    const vendor = await Vendor.findById(req.user.id).lean();
     res.json(vendor);
   } catch (err) {
     res.status(500).json({ message: "Profile fetch error" });
@@ -35,7 +35,7 @@ router.put("/me", authMiddleware, async (req, res) => {
       req.user.id,
       req.body,
       { new: true }
-    );
+    ).lean();
     res.json(updated);
   } catch (err) {
     res.status(500).json({ message: "Profile update failed" });
@@ -51,12 +51,17 @@ router.post(
     try {
       const vendor = await Vendor.findById(req.user.id);
 
-      vendor.gallery.push({
-        fileUrl: `/uploads/vendors/${req.file.filename}`  // ✅ FIXED
+      // Vendor model ke hisab se "media" array ka use
+      if (!vendor.media) vendor.media = [];
+
+      vendor.media.push({
+        url: `/uploads/vendors/${req.file.filename}`, // Your Vendor model expects 'url' field
+        label: req.file.originalname,
+        uploadedAt: new Date()
       });
 
       await vendor.save();
-      res.json(vendor.gallery);
+      res.json(vendor.media);
     } catch (err) {
       res.status(500).json({ message: "Upload failed" });
     }
