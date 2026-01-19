@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Gallery | Wedding Hub</title>
+</head>
+<body>
+
+<h2>Upload Photos & Videos</h2>
+
+<input type="file" id="media" multiple accept="image/,video/">
+<br><br>
+<button onclick="uploadMedia()">Upload</button>
+
+<p id="msg"></p>
+
+<script>
+const vendorId = new URLSearchParams(window.location.search).get("id");
+
+function uploadMedia() {
+  const files = document.getElementById("media").files;
+  if (!files.length) return alert("Select files");
+
+  const formData = new FormData();
+  for (let file of files) {
+    formData.append("media", file);
+  }
+
+  fetch(`http://localhost:5000/api/vendors/${vendorId`}/upload-media, {
+    method: "POST",
+    body: formData
+  })
+    .then(res => res.json())
+    .then(() => {
+      document.getElementById("msg").innerText = "✅ Upload successful";
+    });
+}
+</script>
+
+</body>
+</html>

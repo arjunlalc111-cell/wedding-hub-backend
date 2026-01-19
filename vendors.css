@@ -1,0 +1,59 @@
+body {
+  font-family: Poppins, sans-serif;
+  background: #faf7f2;
+  margin: 0;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  color: #b8860b;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filters select, .filters button {
+  padding: 8px 12px;
+}
+
+.vendor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.vendor-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
+}
+
+.vendor-card h3 {
+  color: #b8860b;
+}
+
+.price {
+  font-weight: bold;
+  color: green;
+}
+
+.pagination {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 3px;
+  padding: 6px 10px;
+}
+
+.pagination .active {
+  background: #b8860b;
+  color: #fff;
+}

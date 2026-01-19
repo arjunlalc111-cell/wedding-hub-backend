@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 node_modules
 npm-debug.log
 .env
 uploads
 .DS_Store
 .git
+=======
+node_modules
+npm-debug.log
+.env
+uploads
+.DS_Store
+.git
+>>>>>>> d5bbcaa8a7565b969665e0975b743e289f5b4c45

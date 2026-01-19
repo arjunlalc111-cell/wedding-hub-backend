@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Vendor Register | Wedding Hub</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body{font-family:'Poppins',sans-serif;background:#f8fafc;margin:0;color:#111}
+    .container{max-width:760px;margin:28px auto;padding:18px}
+    .card{background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .form-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    input[type=text],input[type=email],textarea,select{width:100%;padding:10px;border:1px solid #e6e6e6;border-radius:8px}
+    label{font-size:14px;color:#374151;margin-bottom:6px;display:block}
+    .muted{font-size:13px;color:#6b7280}
+    .btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+    .btn-primary{background:#e11d48;color:#fff}
+    .hint{font-size:13px;color:#6b7280;margin-top:6px}
+    .success{color:green;margin:10px 0}
+    .error{color:#b91c1c;margin:10px 0}
+
+    /* Colorful header */
+    .page-title {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(90deg,#ff9a9e,#fad0c4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2 class="page-title">Vendor Registration</h2>
+      <p class="muted">Fill details and upload required identity documents (selfie + Aadhar or PAN).</p>
+
+      <form id="vendorForm">
+        <div class="form-row">
+          <div style="flex:1">
+            <label for="name">Full Name</label>
+            <input id="name" name="name" type="text" required>
+          </div>
+          <div style="width:220px">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="text" required placeholder="+91XXXXXXXXXX">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div style="flex:1">
+            <label for="email">Email (optional)</label>
+            <input id="email" name="email" type="email">
+          </div>
+          <div style="width:220px">
+            <label for="service">Service</label>
+            <input id="service" name="service" type="text" placeholder="Photographer / Caterer">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div style="flex:1">
+            <label for="city">City</label>
+            <input id="city" name="city" type="text" placeholder="e.g. Mumbai">
+            <div class="hint">If possible, use the exact city/location to improve search matching.</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label for="about">About / Short description</label>
+          <textarea id="about" name="about" rows="3" placeholder="Short intro about your services"></textarea>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #f1f5f9">
+
+        <div style="margin-bottom:10px;">
+          <label>Upload Selfie (required)</label>
+          <input id="selfie" name="selfie" type="file" accept="image/*" required>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label>Upload Aadhar (OR) PAN (one required)</label>
+          <input id="aadhar" name="aadhar" type="file" accept="image/*,application/pdf">
+          <div class="hint">If you don't have Aadhar, upload PAN.</div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label>Upload PAN (optional)</label>
+          <input id="pan" name="pan" type="file" accept="image/*,application/pdf">
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label>GST (optional)</label>
+          <input id="gst" name="gst" type="file" accept="image/*,application/pdf">
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label>Additional Media (photos/videos) — up to 12</label>
+          <input id="media" name="media" type="file" accept="image/*,video/*" multiple>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;margin-top:12px;">
+          <button id="submitBtn" class="btn btn-primary" type="submit">Submit & Register</button>
+          <button id="cancelBtn" type="button" class="btn" style="background:#fff;border:1px solid #e6e6e6">Cancel</button>
+        </div>
+
+        <div id="msg" style="margin-top:12px"></div>
+      </form>
+    </div>
+  </div>
+
+<script src="env.js"></script>
+<script>
+  (function () {
+    const BASE_URL = window.BASE_URL || '';
+    const form = document.getElementById('vendorForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const msg = document.getElementById('msg');
+
+    cancelBtn.addEventListener('click', () => { window.location.href = 'index.html'; });
+
+    function showMessage(text, type) {
+      msg.textContent = text;
+      msg.className = type === 'error' ? 'error' : 'success';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMessage('', '');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
+
+      try {
+        const fdata = new FormData();
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const service = document.getElementById('service').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const about = document.getElementById('about').value.trim();
+
+        if (!name || !phone) {
+          showMessage('Name and phone are required.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit & Register';
+          return;
+        }
+
+        fdata.append('name', name);
+        fdata.append('phone', phone);
+        if (email) fdata.append('email', email);
+        if (service) fdata.append('service', service);
+        if (city) fdata.append('city', city);
+        if (about) fdata.append('about', about);
+
+        const selfie = document.getElementById('selfie').files[0];
+        const aadhar = document.getElementById('aadhar').files[0];
+        const pan = document.getElementById('pan').files[0];
+        const gst = document.getElementById('gst').files[0];
+        const mediaFiles = document.getElementById('media').files;
+
+        if (!selfie) {
+          showMessage('Selfie is required.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit & Register';
+          return;
+        }
+        if (!aadhar && !pan) {
+          showMessage('Please upload Aadhar or PAN.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit & Register';
+          return;
+        }
+
+        fdata.append('selfie', selfie);
+        if (aadhar) fdata.append('aadhar', aadhar);
+        if (pan) fdata.append('pan', pan);
+        if (gst) fdata.append('gst', gst);
+        if (mediaFiles && mediaFiles.length) {
+          for (let i = 0; i < mediaFiles.length; i++) {
+            fdata.append('media', mediaFiles[i]);
+          }
+        }
+
+        // If you have a live backend, send to API; otherwise store demo vendor locally.
+        if (BASE_URL) {
+          const url = `${BASE_URL.replace(/\/+$/, '')}/api/vendors`;
+          const token = localStorage.getItem('token');
+          const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+          const res = await fetch(url, { method: 'POST', body: fdata, headers });
+          const json = await res.json();
+          if (!res.ok) {
+            console.error('Register error', json);
+            showMessage(json.message || 'Registration failed. Please try again.', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit & Register';
+            return;
+          }
+          showMessage('Registration submitted successfully. Your profile will be reviewed.', 'success');
+          setTimeout(() => { window.location.href = 'vendors.html'; }, 1600);
+        } else {
+          // Fallback: store demo vendor locally (for live deployment remove this block)
+          const demoVendor = {
+            id: 'v_local_' + Date.now(),
+            name, phone, email, service, city, about,
+            createdAt: Date.now(),
+            image: 'images/slide1.jpg'
+          };
+          // store vendor and token in localStorage to simulate login
+          localStorage.setItem('vendor', JSON.stringify(demoVendor));
+          localStorage.setItem('token', 'demo-' + Date.now());
+          showMessage('Registered locally (demo). Redirecting to profile...', 'success');
+          setTimeout(() => { window.location.href = 'vendor-profile.html?id=' + encodeURIComponent(demoVendor.id); }, 1000);
+        }
+      } catch (err) {
+        console.error('Submit error', err);
+        showMessage('An error occurred. Try again later.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit & Register';
+      }
+    });
+  })();
+</script>
+</body>
+</html>

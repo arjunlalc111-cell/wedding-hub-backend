@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wedding Hub | Find Verified Wedding Vendors</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="navbar">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="logo">Wedding Hub</div>
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="vendors.html">Vendors</a>
+    </nav>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="lang-switch" aria-hidden="true">
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="hi">HI</button>
+      <button class="lang-btn" data-lang="hinglish">HING</button>
+      <button class="lang-btn" data-lang="gujarati">GU</button>
+      <button class="lang-btn" data-lang="marathi">MR</button>
+      <button class="lang-btn" data-lang="rajasthani">RJ</button>
+    </div>
+
+    <div id="authArea">
+      <a id="vendorRegisterLink" href="vendor-register.html" class="auth-link">Vendor Register</a>
+      <a id="vendorLoginLink" href="vendor-login.html" class="auth-link">Vendor Login</a>
+      <span id="vendorWelcome" style="display:none"></span>
+      <button id="vendorLogoutBtn" style="display:none">Logout</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO: Title + Search -->
+<section class="hero" id="home" aria-label="Hero">
+  <div class="hero-overlay" style="padding:36px 16px;">
+    <h1 class="rose-gold" data-i18n="hero_title">Your Dream Wedding Starts Here</h1>
+    <p data-i18n="hero_subtitle">Find the right vendors, hassle-free</p>
+
+    <div style="position:relative;display:flex;justify-content:center;margin-top:18px;">
+      <div class="search-bar" style="width:100%;max-width:1100px;">
+        <input id="searchService" placeholder="" data-i18n="search_service_placeholder" />
+        <div style="position:relative;flex:1;">
+          <input id="searchLocation" placeholder="" data-i18n="search_location_placeholder" autocomplete="off" />
+          <div id="suggestions" class="autocomplete-suggestions" style="display:none;"></div>
+        </div>
+
+        <div class="search-actions">
+          <button id="searchByServiceBtn" data-i18n="search_by_service" type="button">Search by Service</button>
+          <button id="searchByLocationBtn" data-i18n="search_by_location" type="button">Search by Location</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- slider placed in hero area so it fills the hero -->
+  <div id="hero-slider-wrap">
+    <div id="slider" aria-roledescription="carousel"></div>
+    <div id="sliderThumbs" aria-hidden="false"></div>
+    <button id="prevSlide" aria-label="Previous" class="slider-nav">‹</button>
+    <button id="nextSlide" aria-label="Next" class="slider-nav">›</button>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="padding:28px 20px;">
+  <h2 data-i18n="services_heading">Wedding Services</h2>
+  <p data-i18n="services_sub">Choose a service to find the best vendors</p>
+
+  <div class="service-grid" style="margin-top:12px;">
+    <div class="service-card" data-i18n="service_tent" data-service="Tent"> <div>⛺</div><span>Tent</span></div>
+    <div class="service-card" data-i18n="service_dj" data-service="DJ"> <div>🎧</div><span>DJ</span></div>
+    <div class="service-card" data-i18n="service_caterers" data-service="Caterers"> <div>🍽️</div><span>Caterers</span></div>
+    <div class="service-card" data-i18n="service_photography" data-service="Photography"> <div>📸</div><span>Photography</span></div>
+
+    <div class="service-card" data-i18n="service_makeup" data-service="Makeup"> <div>💄</div><span>Makeup</span></div>
+    <div class="service-card" data-i18n="service_pandit" data-service="Pandit"> <div>🔱</div><span>Pandit</span></div>
+    <div class="service-card" data-i18n="service_dhol" data-service="Dhol"> <div>🥁</div><span>Dhol</span></div>
+    <div class="service-card" data-i18n="service_band" data-service="Band"> <div>🎷</div><span>Band</span></div>
+
+    <div class="service-card" data-i18n="service_godi" data-service="Godi"> <div>🤵</div><span>Godi</span></div>
+    <div class="service-card" data-i18n="service_luxcar" data-service="Luxury Car"> <div>🚗</div><span>Luxury Car</span></div>
+    <div class="service-card" data-i18n="service_banquet" data-service="Banquet"> <div>🏛️</div><span>Banquet</span></div>
+    <div class="service-card" data-i18n="service_ledwall" data-service="LED Wall"> <div>🖥️</div><span>LED Wall</span></div>
+
+    <div class="service-card" data-i18n="service_home_deco" data-service="Home Decoration"> <div>🏡</div><span>Home Deco</span></div>
+    <div class="service-card" data-i18n="service_entry" data-service="Entry"> <div>🎉</div><span>Entry</span></div>
+    <div class="service-card" data-i18n="service_mehndi" data-service="Mehndi"> <div>🎨</div><span>Mehndi</span></div>
+    <div class="service-card" data-i18n="service_light_deco" data-service="Lighting"> <div>💡</div><span>Lighting</span></div>
+
+    <div class="service-card" data-i18n="service_flower_deco" data-service="Flower Decoration"> <div>🌺</div><span>Flower Deco</span></div>
+  </div>
+</section>
+
+<!-- VENDORS (list preview) -->
+<section id="vendors" class="vendors" style="padding:20px;">
+  <h2 data-i18n="find_vendors">Find Vendors</h2>
+  <div style="max-width:1100px;margin:12px auto 0;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+      <div class="chip" id="filterServiceChip">Service: —</div>
+      <div class="chip" id="filterCityChip">City: —</div>
+      <div class="chip" id="filterRadiusChip">Radius: —</div>
+      <button id="clearFilters" class="btn btn-outline">Clear Filters</button>
+    </div>
+    <div id="vendorGrid" class="vendor-grid"></div>
+    <div id="noResults" class="empty-text" style="display:none;margin-top:18px;">No vendors found.</div>
+  </div>
+</section>
+
+<footer>
+  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div style="max-width:420px;">
+      <h3>💍 Wedding Hub</h3>
+      <p data-i18n="footer_tagline">शादी से जुड़ी हर सेवा – एक ही प्लेटफॉर्म पर</p>
+    </div>
+    <div>
+      <h4 data-i18n="follow_us">Follow us on</h4>
+      <div class="social-icons">
+        <a href="#" aria-label="Instagram">Instagram</a> |
+        <a href="#" aria-label="Facebook">Facebook</a> |
+        <a href="#" aria-label="YouTube">YouTube</a> |
+        <a href="#" aria-label="WhatsApp">WhatsApp</a> |
+        <a href="#" aria-label="Telegram">Telegram</a>
+      </div>
+    </div>
+    <div style="max-width:360px;">
+      <h4 data-i18n="about_heading">About Wedding Hub</h4>
+      <p id="aboutText">Wedding Hub connects you to trusted, verified and experienced wedding service providers to make your wedding memorable and stress-free.</p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:18px;color:#9ca3af;">© 2026 Wedding Hub. All Rights Reserved.</div>
+</footer>
+
+<!-- floating WhatsApp -->
+<a id="whatsappFloat" href="#" target="_blank" aria-label="WhatsApp">
+  <img src="images/whatsapp-icon.svg" alt="WhatsApp" />
+</a>
+
+<script src="env.js"></script>
+<script src="lang.js"></script>
+
+<script>
+/* ===== slider, gallery, vendors (merged & updated) ===== */
+
+/* Slider: loads images/slide1.jpeg ... slide{MAX}.jpeg
+   - The CSS controls full-cover display.
+   - Set MAX to number of slide images present in images/ folder.
+*/
+(function(){
+  const sliderEl = document.getElementById('slider');
+  const thumbsEl = document.getElementById('sliderThumbs');
+  const MAX = 10; // update to match your available slide images
+  const slides = [];
+
+  function createSlide(i) {
+    const img = document.createElement('img');
+    img.className = 'slide';
+    img.dataset.index = i;
+    img.src = `images/slide${i}.jpeg`;
+    img.alt = `slide${i}`;
+    img.loading = 'lazy';
+    img.addEventListener('load', () => {
+      // append slide and create thumb
+      sliderEl.appendChild(img);
+      slides.push(img);
+      if (thumbsEl) {
+        const t = document.createElement('img');
+        t.src = img.src;
+        t.alt = img.alt;
+        t.addEventListener('click', () => showSlideByElement(img));
+        thumbsEl.appendChild(t);
+      }
+      if (slides.length === 1) {
+        img.classList.add('active');
+        img.style.display = 'block';
+      }
+    });
+    img.addEventListener('error', () => { img.remove(); });
+  }
+
+  for (let i=1;i<=MAX;i++) createSlide(i);
+
+  let idx=0, autoTimer=null;
+  function startAuto(){ stopAuto(); autoTimer=setInterval(nextSlide,6000); }
+  function stopAuto(){ if(autoTimer){ clearInterval(autoTimer); autoTimer=null; } }
+  function showSlideByIndex(i){ if(slides.length===0) return; idx=(i+slides.length)%slides.length; slides.forEach((s,j)=>{ s.style.display=(j===idx)?'block':'none'; s.classList.toggle('active', j===idx); }); updateThumbs(); }
+  function showSlideByElement(el){ const i=slides.indexOf(el); if(i>=0) showSlideByIndex(i); }
+  function prevSlide(){ if(slides.length===0) return; showSlideByIndex(idx-1); }
+  function nextSlide(){ if(slides.length===0) return; showSlideByIndex(idx+1); }
+
+  function updateThumbs(){
+    if(!thumbsEl) return;
+    const thumbs = Array.from(thumbsEl.querySelectorAll('img'));
+    thumbs.forEach((t,j)=> t.classList.toggle('active-thumb', j===idx));
+    // ensure active thumb is visible
+    const active = thumbs[idx];
+    if (active) active.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }
+
+  const prevBtn = document.getElementById('prevSlide');
+  const nextBtn = document.getElementById('nextSlide');
+  if (prevBtn) prevBtn.addEventListener('click', ()=>{ prevSlide(); stopAuto(); startAuto(); });
+  if (nextBtn) nextBtn.addEventListener('click', ()=>{ nextSlide(); stopAuto(); startAuto(); });
+
+  // when slides are ready, start autoplay and set thumbs active
+  const readyCheck = setInterval(()=> {
+    if (slides.length > 0) {
+      clearInterval(readyCheck);
+      showSlideByIndex(0);
+      startAuto();
+    }
+  }, 250);
+})();
+
+/* Autocomplete & search handlers */
+(function(){
+  const input = document.getElementById('searchLocation');
+  const sugg = document.getElementById('suggestions'); let timer=null;
+  function showSuggestions(items){ if(!sugg) return; if(!items||items.length===0){ sugg.style.display='none'; return;} sugg.innerHTML=''; items.forEach(it=>{ const div=document.createElement('div'); div.className='suggestion-item'; div.textContent=it.display_name; div.dataset.lat=it.lat; div.dataset.lon=it.lon; div.addEventListener('click', ()=>{ input.value=it.display_name; input.dataset.lat=it.lat; input.dataset.lng=it.lon; sugg.style.display='none'; }); sugg.appendChild(div); }); sugg.style.display='block'; }
+  if(input){ input.addEventListener('input',(e)=>{ const q=e.target.value.trim(); input.removeAttribute('data-lat'); input.removeAttribute('data-lng'); if(timer) clearTimeout(timer); if(!q){ if(sugg) sugg.style.display='none'; return;} timer=setTimeout(async ()=>{ try{ const url=`https://nominatim.openstreetmap.org/search?format=json&limit=6&q=${encodeURIComponent(q)}`; const res=await fetch(url,{headers:{'Accept-Language':'en-US'}}); const json=await res.json(); showSuggestions(json); }catch(err){ console.warn('Nominatim error',err); showSuggestions([]);} },300); });
+    document.addEventListener('click',(e)=>{ if(!sugg||!input) return; if(!sugg.contains(e.target) && e.target!==input) sugg.style.display='none'; });
+  }
+})();
+
+/* Vendors preview + distance sorting (100 km default) and search-button handlers */
+document.addEventListener('DOMContentLoaded', async () => {
+  // --- Search buttons: attach handlers so clicks work ---
+  const serviceInput = document.getElementById('searchService');
+  const locationInput = document.getElementById('searchLocation');
+  const svcBtn = document.getElementById('searchByServiceBtn');
+  const locBtn = document.getElementById('searchByLocationBtn');
+
+  function doServiceSearch() {
+    const s = (serviceInput && serviceInput.value || '').trim();
+    if (!s) { alert('Please enter a service to search'); return; }
+    localStorage.setItem('searchService', s);
+    localStorage.removeItem('searchCity'); localStorage.removeItem('searchLat'); localStorage.removeItem('searchLng');
+    location.hash = '#vendors'; location.reload();
+  }
+
+  function doLocationSearch() {
+    const loc = (locationInput && locationInput.value || '').trim();
+    if (!loc) { alert('Please enter a location to search'); return; }
+    localStorage.setItem('searchCity', loc);
+    if (locationInput && locationInput.dataset && locationInput.dataset.lat && locationInput.dataset.lng) {
+      localStorage.setItem('searchLat', locationInput.dataset.lat);
+      localStorage.setItem('searchLng', locationInput.dataset.lng);
+    } else {
+      localStorage.removeItem('searchLat'); localStorage.removeItem('searchLng');
+    }
+    localStorage.removeItem('searchService');
+    location.hash = '#vendors'; location.reload();
+  }
+
+  if (svcBtn) svcBtn.addEventListener('click', doServiceSearch);
+  if (locBtn) locBtn.addEventListener('click', doLocationSearch);
+
+  if (serviceInput) serviceInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doServiceSearch(); } });
+  if (locationInput) locationInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doLocationSearch(); } });
+
+  // helper: Haversine
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1); const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+    return 2*R*Math.asin(Math.sqrt(a));
+  }
+
+  const searchService = (localStorage.getItem('searchService')||'').trim();
+  const searchCity = (localStorage.getItem('searchCity')||'').trim();
+  const searchLat = parseFloat(localStorage.getItem('searchLat')||'');
+  const searchLng = parseFloat(localStorage.getItem('searchLng')||'');
+  const maxKm = (window.FRONTEND_CONFIG && window.FRONTEND_CONFIG.DEFAULT_SEARCH_RADIUS_KM) || 100;
+
+  document.getElementById('filterServiceChip').textContent = 'Service: ' + (searchService || '—');
+  document.getElementById('filterCityChip').textContent = 'City: ' + (searchCity || '—');
+  document.getElementById('filterRadiusChip').textContent = 'Radius: ' + maxKm + ' km';
+
+  document.getElementById('clearFilters').addEventListener('click', () => {
+    localStorage.removeItem('searchService'); localStorage.removeItem('searchCity'); localStorage.removeItem('searchLat'); localStorage.removeItem('searchLng'); location.reload();
+  });
+
+  // fetch vendors.json
+  let data = { vendors: [] };
+  try { const res = await fetch('vendors.json', {cache:'no-store'}); data = await res.json(); } catch(e){ console.warn('Failed to load vendors.json',e); }
+
+  let vendors = data.vendors || [];
+
+  // apply text filters
+  if (searchService) {
+    const needle = searchService.toLowerCase();
+    vendors = vendors.filter(v => (v.services||[]).some(s => s.toLowerCase().includes(needle)) || v.name.toLowerCase().includes(needle));
+  }
+  if (searchCity) {
+    const sc = searchCity.toLowerCase();
+    vendors = vendors.filter(v => (v.city||'').toLowerCase().includes(sc) || (v.location||'').toLowerCase().includes(sc));
+  }
+
+  // compute distance (if lat/lng provided)
+  if (!isNaN(searchLat) && !isNaN(searchLng)) {
+    vendors = vendors.map(v => {
+      const d = (v.lat && v.lng) ? haversineKm(searchLat, searchLng, parseFloat(v.lat), parseFloat(v.lng)) : Infinity;
+      return {...v, __distance_km: d};
+    }).filter(v => v.__distance_km <= maxKm);
+  } else {
+    vendors = vendors.map(v => ({...v, __distance_km: null}));
+  }
+
+  // sort by distance if available, else by rating desc
+  vendors.sort((a,b) => {
+    if (a.__distance_km != null && b.__distance_km != null) return a.__distance_km - b.__distance_km;
+    if (a.rating && b.rating) return b.rating - a.rating;
+    return 0;
+  });
+
+  const grid = document.getElementById('vendorGrid'); grid.innerHTML = '';
+  if (!vendors || vendors.length === 0) {
+    document.getElementById('noResults').style.display = 'block';
+  } else {
+    document.getElementById('noResults').style.display = 'none';
+    vendors.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'vendor-card';
+      div.innerHTML = `
+        <div class="vendor-media"><img src="${v.image||'images/slide1.jpeg'}" alt="${v.name}" loading="lazy" /></div>
+        <div class="vendor-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">
+            <div>
+              <div class="vendor-name">${v.name}</div>
+              <div class="vendor-meta">${v.city} • ${v.location || ''}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:700">${v.rating || '—'} ★</div>
+              <div style="font-size:13px;color:var(--muted)">${v.price||''}</div>
+            </div>
+          </div>
+          <div style="margin-top:8px;color:var(--muted);font-size:14px;">${(v.services||[]).join(' • ')}</div>
+          <div class="vendor-actions" style="margin-top:12px;">
+            <a class="btn btn-primary" href="tel:${v.phone}">Call</a>
+            <a class="btn btn-outline" href="https://wa.me/${(v.phone||'').replace(/[^0-9]/g,'')}" target="_blank">WhatsApp</a>
+            <a class="btn" style="background:#111;color:#fff;margin-left:8px" href="vendor-profile.html?id=${encodeURIComponent(v.id)}">View Profile</a>
+          </div>
+        </div>
+      `;
+      grid.appendChild(div);
+    });
+  }
+
+  // show vendor welcome if logged in
+  try {
+    const token = localStorage.getItem('token');
+    const vendor = JSON.parse(localStorage.getItem('vendor') || 'null');
+    if (token && vendor) {
+      const reg = document.getElementById('vendorRegisterLink');
+      const login = document.getElementById('vendorLoginLink');
+      if (reg) reg.style.display = 'none';
+      if (login) login.style.display = 'none';
+      const wok = document.getElementById('vendorWelcome');
+      if (wok) { wok.style.display = 'inline-block'; wok.textContent = vendor.name; }
+      const logout = document.getElementById('vendorLogoutBtn'); if (logout) { logout.style.display = 'inline-block'; logout.addEventListener('click', ()=>{ localStorage.removeItem('token'); localStorage.removeItem('vendor'); location.reload(); }); }
+    }
+  } catch(e){}
+});
+
+/* Service-card click handler — delegates clicks and sets service filter */
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('click', (e) => {
+    const card = e.target.closest('.service-card');
+    if (!card) return;
+
+    // Prefer visible label inside span, then data-service, then data-i18n key
+    let service = '';
+    const span = card.querySelector('span');
+    if (span && span.textContent && span.textContent.trim()) {
+      service = span.textContent.trim();
+    } else if (card.dataset && card.dataset.service) {
+      service = card.dataset.service;
+    } else if (card.getAttribute('data-i18n')) {
+      service = card.getAttribute('data-i18n');
+    } else {
+      // fallback: remove emoji and trim
+      try {
+        service = card.textContent.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim();
+      } catch (err) {
+        service = card.textContent.replace(/[\u{1F300}-\u{1F6FF}]/gu, '').trim();
+      }
+    }
+
+    if (!service) return;
+
+    // store filter like search buttons do
+    localStorage.setItem('searchService', service);
+    localStorage.removeItem('searchCity');
+    localStorage.removeItem('searchLat');
+    localStorage.removeItem('searchLng');
+
+    // navigate to vendors and reload so list applies filter
+    location.hash = '#vendors';
+    location.reload();
+  }, false);
+});
+
+/* images-loaded helper: add 'loaded' class to lazy images so CSS shows them */
+(function(){
+  function markLoaded(img){ try { img.classList.add('loaded'); } catch(e){} }
+  document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+    if (img.complete && img.naturalWidth !== 0) markLoaded(img);
+    else { img.addEventListener('load', ()=>markLoaded(img)); img.addEventListener('error', ()=>markLoaded(img)); }
+  });
+  const obs = new MutationObserver(list => {
+    list.forEach(rec => rec.addedNodes.forEach(node => {
+      if (node.tagName === 'IMG' && node.getAttribute('loading') === 'lazy') {
+        if (node.complete && node.naturalWidth !== 0) markLoaded(node);
+        else { node.addEventListener('load', ()=>markLoaded(node)); node.addEventListener('error', ()=>markLoaded(node)); }
+      }
+    }));
+  });
+  obs.observe(document.body, { childList:true, subtree:true });
+})();
+</script>
+
+</body>
+</html>

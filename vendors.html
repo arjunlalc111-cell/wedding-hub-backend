@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wedding Hub — Vendors</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="navbar">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="logo">Wedding Hub</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#vendors">Vendors</a>
+    </nav>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div id="authArea">
+      <a id="vendorRegisterLink" href="vendor-register.html">Vendor Register</a>
+      <a id="vendorLoginLink" href="vendor-login.html">Vendor Login</a>
+      <span id="vendorWelcome" style="display:none"></span>
+      <button id="vendorLogoutBtn" style="display:none">Logout</button>
+    </div>
+  </div>
+</header>
+
+<main style="padding:96px 16px 40px; max-width:1100px;margin:0 auto;">
+  <h1 id="resultsTitle">Vendors</h1>
+  <p id="resultsSub">Showing results for your search</p>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin:12px 0;">
+    <div class="chip" id="filterServiceChip">Service: —</div>
+    <div class="chip" id="filterCityChip">City: —</div>
+    <div class="chip" id="filterRadiusChip">Radius: —</div>
+    <button id="clearFilters" class="btn btn-outline">Clear Filters</button>
+  </div>
+
+  <div id="vendorGrid" class="vendor-grid" style="margin-top:16px;"></div>
+
+  <div id="noResults" class="empty-text" style="display:none;margin-top:18px;">No vendors found.</div>
+</main>
+
+<footer>
+  <div style="text-align:center;padding:18px;color:#9ca3af;">© 2026 Wedding Hub</div>
+</footer>
+
+<script src="env.js"></script>
+<script>
+/* vendors.html client-side viewer
+   - Expects vendors.json in same folder
+   - Reads localStorage keys: searchService, searchCity, searchLat, searchLng
+*/
+(async function(){
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+    return 2*R*Math.asin(Math.sqrt(a));
+  }
+
+  function safePhone(num) {
+    if (!num) return '';
+    return String(num).replace(/[^0-9]/g, '');
+  }
+
+  function renderVendor(v) {
+    const div = document.createElement('div');
+    div.className = 'vendor-card';
+    const phone = safePhone(v.phone || '');
+    div.innerHTML = `
+      <div class="vendor-media"><img src="${v.image || 'images/slide1.jpg'}" alt="${v.name}" loading="lazy" /></div>
+      <div class="vendor-body">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">
+          <div>
+            <div class="vendor-name">${v.name}</div>
+            <div class="vendor-meta">${v.city} • ${v.location || ''}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:600">${v.rating || '—'} ★</div>
+            <div style="font-size:13px;color:var(--muted)">${v.price || ''}</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;color:var(--muted);font-size:14px;">
+          ${ (v.services || []).join(' • ') }
+        </div>
+        <div class="vendor-actions" style="margin-top:12px;">
+          <a class="btn btn-primary" href="tel:${phone}">Call</a>
+          <a class="btn btn-outline" href="https://wa.me/${phone}" target="_blank">WhatsApp</a>
+          <a class="btn" style="background:#111;color:#fff;margin-left:8px" href="vendor-profile.html?id=${encodeURIComponent(v.id)}">View Profile</a>
+        </div>
+      </div>
+    `;
+    return div;
+  }
+
+  // read filters from localStorage
+  const searchService = (localStorage.getItem('searchService') || '').trim();
+  const searchCity = (localStorage.getItem('searchCity') || '').trim();
+  const searchLat = parseFloat(localStorage.getItem('searchLat') || '');
+  const searchLng = parseFloat(localStorage.getItem('searchLng') || '');
+  const defaultRadius = (window.FRONTEND_CONFIG && window.FRONTEND_CONFIG.DEFAULT_SEARCH_RADIUS_KM) || 100;
+
+  document.getElementById('filterServiceChip').textContent = 'Service: ' + (searchService || '—');
+  document.getElementById('filterCityChip').textContent = 'City: ' + (searchCity || '—');
+  document.getElementById('filterRadiusChip').textContent = 'Radius: ' + defaultRadius + ' km';
+
+  document.getElementById('clearFilters').addEventListener('click', () => {
+    localStorage.removeItem('searchService');
+    localStorage.removeItem('searchCity');
+    localStorage.removeItem('searchLat');
+    localStorage.removeItem('searchLng');
+    location.reload();
+  });
+
+  // load vendors.json
+  try {
+    const res = await fetch('vendors.json', {cache: 'no-store'});
+    const data = await res.json();
+    let vendors = data.vendors || [];
+
+    // filter by service
+    if (searchService) {
+      const needle = searchService.toLowerCase();
+      vendors = vendors.filter(v => (v.services || []).some(s => s.toLowerCase().includes(needle)) || v.name.toLowerCase().includes(needle));
+    }
+
+    // filter by city text
+    if (searchCity) {
+      const sc = searchCity.toLowerCase();
+      vendors = vendors.filter(v => (v.city||'').toLowerCase().includes(sc) || (v.location||'').toLowerCase().includes(sc));
+    }
+
+    // filter by lat/lng radius
+    if (!isNaN(searchLat) && !isNaN(searchLng)) {
+      vendors = vendors.map(v => {
+        if (!v.lat || !v.lng) return {...v, __distance_km: Infinity};
+        const d = haversineKm(searchLat, searchLng, parseFloat(v.lat), parseFloat(v.lng));
+        return {...v, __distance_km: d};
+      }).filter(v => v.__distance_km <= defaultRadius);
+    } else {
+      vendors = vendors.map(v => ({...v, __distance_km: null}));
+    }
+
+    // sort by distance then rating
+    vendors.sort((a,b) => {
+      if (a.__distance_km != null && b.__distance_km != null) return a.__distance_km - b.__distance_km;
+      if (a.rating && b.rating) return b.rating - a.rating;
+      return 0;
+    });
+
+    const grid = document.getElementById('vendorGrid');
+    grid.innerHTML = '';
+    if (vendors.length === 0) {
+      document.getElementById('noResults').style.display = 'block';
+      document.getElementById('resultsSub').textContent = 'No vendors matched your search.';
+    } else {
+      document.getElementById('noResults').style.display = 'none';
+      document.getElementById('resultsSub').textContent = `Showing ${vendors.length} result${vendors.length>1?'s':''}`;
+      vendors.forEach(v => grid.appendChild(renderVendor(v)));
+    }
+  } catch (err) {
+    console.error('Failed to load vendors.json', err);
+    document.getElementById('resultsSub').textContent = 'Failed to load vendor data.';
+  }
+
+  // auth UI: show vendor name if logged in
+  try {
+    const token = localStorage.getItem('token');
+    const vendor = JSON.parse(localStorage.getItem('vendor') || 'null');
+    if (token && vendor) {
+      document.getElementById('vendorRegisterLink').style.display = 'none';
+      document.getElementById('vendorLoginLink').style.display = 'none';
+      const wok = document.getElementById('vendorWelcome');
+      wok.style.display = 'inline-block';
+      wok.textContent = vendor.name;
+      const logout = document.getElementById('vendorLogoutBtn');
+      logout.style.display = 'inline-block';
+      logout.addEventListener('click', () => { localStorage.removeItem('token'); localStorage.removeItem('vendor'); location.reload(); });
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
