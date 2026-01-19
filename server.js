@@ -27,7 +27,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import publicVendorRoutes from "./routes/publicVendorRoutes.js";
 import vendorProfileRoutes from "./routes/vendorProfileRoutes.js";
 import adminBookingRoutes from "./routes/adminBookingRoutes.js";
-import serviceRoutes from "./routes/serviceRoutes.js";
+import serviceRoutes from "./routes/ServiceRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import adminBannerRoutes from "./routes/adminBannerRoutes.js";
