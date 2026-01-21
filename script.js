@@ -1,3 +1,5 @@
+//
+// ======== (existing code at the top, unchanged) =======
 // ===============================
 // CONFIG
 // ===============================
@@ -25,6 +27,24 @@ document.querySelectorAll(".lang-btn").forEach(btn => {
     applyLanguage(lang);
   });
 });
+
+// ===============================
+// LOADER SPINNER (ADD THIS BLOCK)
+// ===============================
+function showLoader() {
+  const loader = document.getElementById("mainLoader");
+  if (loader) loader.classList.add("active");
+}
+function hideLoader() {
+  const loader = document.getElementById("mainLoader");
+  if (loader) loader.classList.remove("active");
+}
+// (Make sure index.html contains the loader HTML block)
+/*
+<div id="mainLoader">
+  <div class="loader-spinner"></div>
+</div>
+*/
 
 // ===============================
 // DOM ELEMENTS
@@ -87,11 +107,13 @@ if (searchBtn) {
     window.location.href = "vendors.html";
   });
 }
+
 // ===============================
 // LOAD VENDORS (BACKEND)
 // ===============================
 async function loadVendors() {
   vendorsSection.innerHTML = "<p>Loading vendors...</p>";
+  showLoader(); // Show spinner before fetching
 
   try {
     const query = new URLSearchParams({
@@ -105,6 +127,7 @@ async function loadVendors() {
 
     if (!vendors.length) {
       vendorsSection.innerHTML = "<p>No vendors found</p>";
+      hideLoader();
       return;
     }
 
@@ -133,6 +156,8 @@ async function loadVendors() {
   } catch (err) {
     console.error(err);
     vendorsSection.innerHTML = "<p>Error loading vendors</p>";
+  } finally {
+    hideLoader(); // Hide spinner after load
   }
 }
 

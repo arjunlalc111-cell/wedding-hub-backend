@@ -1,33 +1,22 @@
 {
-  "name": "wedding-hub-backend",
+  "name": "weddinghub-frontend",
   "version": "1.0.0",
-  "description": "Backend for Wedding Hub - vendors API",
-  "main": "server.js",
-  "type": "module",
+  "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "approve": "node scripts/approve-all-vendors.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "compression": "^1.8.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-rate-limit": "^6.7.0",
-    "helmet": "^6.0.1",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.0",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
-    "node-fetch": "^2.6.7",
-    "nodemailer": "^7.0.12"
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-hot-toast": "^2.6.0",
+    "recharts": "^3.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
   }
 }

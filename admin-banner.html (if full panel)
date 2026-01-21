@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Banner Management - Wedding Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fb; margin: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #eee; padding: 32px; }
+    h2 { color: #b95c9b; text-align: center; letter-spacing: 1px; margin-bottom: 8px; }
+    p { color: #666; text-align: center; margin-bottom: 24px; }
+    .banner-preview { text-align: center; margin-bottom: 24px; }
+    .banner-preview img { max-width: 100%; max-height: 220px; border-radius: 8px; box-shadow: 0 1px 3px #bbb; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; margin-bottom: 6px; color: #333; font-weight: 500; }
+    input[type="text"], input[type="file"], textarea {
+      width: 100%; padding: 9px 14px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 1rem;
+    }
+    button {
+      background: linear-gradient(90deg, #b95c9b, #f494a8 100%);
+      color: #fff; border: none; padding: 12px 32px; border-radius: 5px; font-size: 1rem;  cursor: pointer;
+      transition: background .2s;
+      font-weight: bold;
+      box-shadow: 0 2px 4px #eed1e9;
+      margin: 0 auto;
+      display: block;
+    }
+    button:active { filter: brightness(.96); }
+    .success, .error { text-align: center; font-weight: bold; margin-bottom: 12px; }
+    .success { color: #2e944b; }
+    .error { color: #c0392b; }
+    @media (max-width: 650px) {
+      .container { padding:16px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Banner Manager</h2>
+    <p>Update the homepage promotional banner for your users.<br>
+    Recommended size <b>1200×400px</b></p>
+    <div class="banner-preview" id="banner-preview">
+      <img src="https://placehold.co/1200x400/ffddf3/701c58?text=Wedding+Hub+Banner+Demo" id="bannerImage" alt="Current Banner">
+    </div>
+    <form id="bannerForm" enctype="multipart/form-data" autocomplete="off">
+      <div class="form-group">
+        <label for="bannerTitle">Banner Title</label>
+        <input type="text" id="bannerTitle" name="bannerTitle" placeholder="Enter banner headline" maxlength="80" required>
+      </div>
+      <div class="form-group">
+        <label for="bannerText">Short Description</label>
+        <textarea id="bannerText" name="bannerText" rows="2" placeholder="Enter banner subtext"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="bannerFile">Banner Image</label>
+        <input type="file" id="bannerFile" name="bannerFile" accept="image/*">
+      </div>
+      <div id="result-message"></div>
+      <button type="submit">Update Banner</button>
+    </form>
+  </div>
+  <script>
+    const fileInput = document.getElementById('bannerFile');
+    const imgPreview = document.getElementById('bannerImage');
+    const bannerForm = document.getElementById('bannerForm');
+    const resultMsg = document.getElementById('result-message');
+
+    fileInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imgPreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    bannerForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      resultMsg.innerHTML = '';
+      // Placeholder: Pretend we sent a request!
+      setTimeout(function() {
+        resultMsg.innerHTML = "<div class='success'>Banner updated successfully! (demo only)</div>";
+      }, 700);
+      // In real use: AJAX POST with FormData to server endpoint here!
+    });
+  </script>
+</body>
+</html>
