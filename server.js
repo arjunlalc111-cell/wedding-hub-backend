@@ -34,23 +34,27 @@ import adminBannerRoutes from "./routes/adminBannerRoutes.js";
 
 // Path setup for ES Modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const _dirname = path.dirname(_filename);
 
 const app = express();
 
 // ENV
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
-// Middleware
+// ================= MIDDLEWARE =================
+
 app.set("trust proxy", 1);
 app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiter
+// ================= RATE LIMIT =================
+
 app.use(
   "/api/",
   rateLimit({
@@ -59,31 +63,42 @@ app.use(
   })
 );
 
-// CORS
+// ================= CORS FIX (FINAL) =================
+
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "http://localhost:3000",
+      FRONTEND_URL,
+      "https://ornate-bublanina-c2a901.netlify.app",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-// Uploads folder
+// ================= UPLOADS STATIC =================
+
 const uploadsDir = path.join(__dirname, "uploads");
+
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+
 app.use("/uploads", express.static(uploadsDir));
 
-// Health check
+// ================= HEALTH CHECK =================
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Routes
+// ================= ROUTES =================
+
 app.use("/api/auth", authRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/vendors", vendorManageRoutes);
+app.use("/api/vendor/profile", vendorProfileRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/bookings", adminBookingRoutes);
 app.use("/api/bookings", bookingRoutes);
@@ -93,22 +108,26 @@ app.use("/api/users", userRoutes);
 app.use("/api/public/vendors", publicVendorRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/notifications", notificationRoutes);
-app.use(adminBannerRoutes);
+app.use("/api/banners", adminBannerRoutes);
 
-// Root
+// ================= ROOT =================
+
 app.get("/", (req, res) => {
   res.send("WeddingHub API is Live 🚀");
 });
 
-// 404
+// ================= 404 =================
+
 app.use((req, res) => {
   res.status(404).json({ message: "Route Not Found" });
 });
 
-// Error handler
+// ================= ERROR =================
+
 app.use(errorHandler);
 
-// Start server
+// ================= START SERVER =================
+
 async function startServer() {
   try {
     if (!MONGO_URI) {
